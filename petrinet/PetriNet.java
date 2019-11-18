@@ -123,17 +123,17 @@ public class PetriNet<T> {
                     }
                 }
 
+                // Setting number of tokens in every place connected with the given transition
+                // by reset arc to 0.
+                for (T entry : transition.reset) {
+                    net.remove(entry);
+                }
+
                 // Adding to every place connected with given transition by output arc
                 // number of tokens equal to the weight of that arc.
                 for (Map.Entry<T, Integer> entry : transition.output.entrySet()) {
                     net.putIfAbsent(entry.getKey(), 0);
                     net.replace(entry.getKey(), net.get(entry.getKey()) + entry.getValue());
-                }
-
-                // Setting number of tokens in every place connected with the given transition
-                // by reset arc to 0.
-                for (T entry : transition.reset) {
-                    net.remove(entry);
                 }
                 return true;
             }
@@ -185,7 +185,7 @@ public class PetriNet<T> {
                 }
             }
 
-            noTransitionEnabled.signal();
+            noTransitionEnabled.signalAll();
 
             return chosen;
         } finally {
